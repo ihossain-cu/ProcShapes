@@ -23,32 +23,51 @@ class ParamVectorDef:
         self.params = []
 
         if shape == 'bed':
-            self.params.append(Parameter(ParamType.SCALAR, [(0.5, 2.0, 8),(0.1, 0.4, 5), (0.0, 0.55, 5), (0.0, 0.55, 5), (0.1, 0.25, 5)]))
+            self.params.append(Parameter(ParamType.SCALAR, [
+                np.linspace(0.6, 1.0, 2, endpoint=False).tolist() + np.linspace(1.0, 1.6, 2).tolist(),
+                np.linspace(0.1, 0.3, 3).tolist(),
+                np.linspace(0.0, 0.55, 3).tolist(),
+                np.linspace(0.0, 0.55, 3).tolist(),
+                np.linspace(0.1, 0.25, 3).tolist()
+            ]))
             self.params.append(Parameter(ParamType.TYPE, ['basic', 'split', 'box']))
             self.params.append(Parameter(ParamType.INTEGER, [0, 2]))
         elif shape == 'chair':
-            self.params.append(Parameter(ParamType.SCALAR, [(0.3, 0.8, 8), (0.4, 0.6, 8), (0.3, 0.5, 5)]))
+            self.params.append(Parameter(ParamType.SCALAR, [
+                np.linspace(0.3, 0.8, 6).tolist(),
+                np.linspace(0.4, 0.6, 3).tolist(),
+                np.linspace(0.3, 0.5, 3).tolist()
+            ]))
             self.params.append(Parameter(ParamType.TYPE, ['basic', 'round', 'support', 'office']))
             self.params.append(Parameter(ParamType.TYPE, ['none', 'basic', 'solid', 'office']))
             self.params.append(Parameter(ParamType.TYPE, ['basic', 'hbar', 'vbar', 'office']))
         elif shape == 'shelf':
-            self.params.append(Parameter(ParamType.SCALAR, [(0.2, 5.0, 8), (0.1, 0.3, 8), (0.0, 0.2, 5)]))
+            self.params.append(Parameter(ParamType.SCALAR, [
+                np.linspace(0.2, 1.0, 4, endpoint=False).tolist() + np.linspace(1.0, 5.0, 4).tolist(),
+                np.linspace(0.1, 0.3, 3).tolist(),
+                np.linspace(0.0, 0.2, 3).tolist()
+            ]))
             self.params.append(Parameter(ParamType.INTEGER, [1, 5]))
             self.params.append(Parameter(ParamType.INTEGER, [1, 5]))
             self.params.append(Parameter(ParamType.BINARY, None))
             self.params.append(Parameter(ParamType.BINARY, None))
             self.params.append(Parameter(ParamType.BINARY, None))
-        else:
-            self.params.append(Parameter(ParamType.SCALAR, [(0.2, 5.0, 8), (0.3, 1.0, 8), (0.05, 0.25, 5), (0.05, 0.25, 5)]))
+        elif shape == 'table':
+            self.params.append(Parameter(ParamType.SCALAR, [
+                np.linspace(0.6, 1.0, 4, endpoint=False).tolist() + np.linspace(1.0, 4.0, 4).tolist(),
+                np.linspace(0.4, 1.0, 4).tolist(),
+                np.linspace(0.05, 0.25, 3).tolist(),
+                np.linspace(0.11, 0.15, 3).tolist()
+            ]))
             self.params.append(Parameter(ParamType.BINARY, None))
-            self.params.append(Parameter(ParamType.TYPE, ['basic', 'support', 'round', 'split']))
+            self.params.append(Parameter(ParamType.TYPE, ['basic', 'support', 'round', 'split', 'square', 'solid']))
 
     def get_random_vectors(self, max_len=3000):
         param_domain = []
         for param in self.params:
             if param.paramtype == ParamType.SCALAR:
                 for elem in param.data:
-                    param_domain.append(np.linspace(elem[0], elem[1], elem[2]))
+                    param_domain.append(elem)
             elif param.paramtype == ParamType.BINARY:
                 param_domain.append([False, True])
             elif param.paramtype == ParamType.INTEGER:
@@ -78,7 +97,7 @@ class ParamVectorDef:
                 data = np.array([x[index:index+col_length] for x in vectors], dtype=float)
                 if paramtype == ParamType.SCALAR:
                     min_vals = np.array([x[0] for x in param.data], ndmin=2)
-                    max_vals = np.array([x[1] for x in param.data], ndmin=2)
+                    max_vals = np.array([x[-1] for x in param.data], ndmin=2)
                     data = (data - min_vals) / (max_vals - min_vals)
                 encoded_vectors.append(data)
             elif paramtype == ParamType.INTEGER:
@@ -102,7 +121,7 @@ class ParamVectorDef:
             data = vectors[i]
             if paramtype == ParamType.SCALAR:
                 min_vals = np.array([x[0] for x in param.data], ndmin=2)
-                max_vals = np.array([x[1] for x in param.data], ndmin=2)
+                max_vals = np.array([x[-1] for x in param.data], ndmin=2)
                 data = data * (max_vals - min_vals) + min_vals
             elif paramtype == ParamType.BINARY:
                 data = np.isclose(data, 1.0)
@@ -142,3 +161,4 @@ def unit_test(shape, num_samples):
 
 if __name__ == '__main__':
     unit_test('chair', num_samples=5)
+
