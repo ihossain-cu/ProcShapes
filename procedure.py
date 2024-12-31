@@ -94,13 +94,22 @@ class Procedure:
         self.pillow.from_mesh(obj.data)
         bmesh.ops.scale(self.pillow, vec=mathutils.Vector((0.24, 0.12, 0.2)), verts=self.pillow.verts)
 
+    def remap_input(self, x, min, max, isratio=False):
+        if not isratio:
+            return min + (max - min) * x
+        else:
+            if x < 0.5:
+                return min + 2 * (1 - min) * x
+            else:
+                return 1 + 2 * (max - 1) * (x - 0.5)
+
     def create_bed(self, paramvector):
         bmeshes = []
-        whratio = paramvector[0]
-        leg_height = paramvector[1]
-        headboard_height = paramvector[2]
-        frontboard_height = paramvector[3]
-        mattress_height = paramvector[4]
+        whratio = self.remap_input(paramvector[0], 0.6, 1.6, True)
+        leg_height = self.remap_input(paramvector[1], 0.1, 0.3)
+        headboard_height = self.remap_input(paramvector[2], 0.0, 0.55)
+        frontboard_height = self.remap_input(paramvector[3], 0.0, 0.55)
+        mattress_height = self.remap_input(paramvector[4], 0.1, 0.25)
         leg_type = paramvector[5]
         num_pillows = paramvector[6]
         wh_r, l_h, hb_h, fb_h, m_h, l_tp,  n_p = whratio, leg_height, headboard_height, frontboard_height, mattress_height, leg_type, num_pillows
@@ -164,9 +173,9 @@ class Procedure:
 
     def create_chair(self, paramvector):
         bmeshes = []
-        whratio = paramvector[0]
-        depth = paramvector[1]
-        leg_height = paramvector[2]
+        whratio = self.remap_input(paramvector[0], 0.3, 0.8, True)
+        depth = self.remap_input(paramvector[1], 0.4, 0.6)
+        leg_height = self.remap_input(paramvector[2], 0.3, 0.5)
         leg_type = paramvector[3]
         arm_type = paramvector[4]
         back_type = paramvector[5]
@@ -280,9 +289,9 @@ class Procedure:
 
     def create_shelf(self, paramvector):
         bmeshes = []
-        whratio = paramvector[0]
-        depth = paramvector[1]
-        leg_height = paramvector[2]
+        whratio = self.remap_input(paramvector[0], 0.2, 5.0, True)
+        depth = self.remap_input(paramvector[1], 0.1, 0.3)
+        leg_height = self.remap_input(paramvector[2], 0.0, 0.2)
         num_rows = paramvector[3]
         num_columns = paramvector[4]
         fill_back = paramvector[5]
@@ -333,10 +342,10 @@ class Procedure:
 
     def create_table(self, paramvector):
         bmeshes = []
-        whratio = paramvector[0]
-        depth = paramvector[1]
-        top_thickness = paramvector[2]
-        leg_thickness = paramvector[3]
+        whratio = self.remap_input(paramvector[0], 0.6, 4.0, True)
+        depth = self.remap_input(paramvector[1], 0.4, 1.0)
+        top_thickness = self.remap_input(paramvector[2], 0.05, 0.25)
+        leg_thickness = self.remap_input(paramvector[3], 0.11, 0.15)
         roundtop = paramvector[4]
         leg_type = paramvector[5]
         wh_r, d, t_th, l_th, rt, l_tp = whratio, depth, top_thickness, leg_thickness, roundtop, leg_type
@@ -399,7 +408,7 @@ class Procedure:
 
 def unit_test(args):
     num_samples = args.num_samples
-    proc = Procedure('chair')
+    proc = Procedure('table')
     '''
     Parameter vectors can be manually defined, such as
     vectors = [
@@ -417,7 +426,10 @@ def unit_test(args):
         meshes.append(proc.get_shape(vector))
     omeshes = []
     for mesh in meshes:
-        omesh = o3d.geometry.TriangleMesh(o3d.utility.Vector3dVector(mesh.vertices), o3d.utility.Vector3iVector(mesh.faces))
+        omesh = o3d.geometry.TriangleMesh(
+            o3d.utility.Vector3dVector(np.array(mesh.vertices, dtype=np.float64)),
+            o3d.utility.Vector3iVector(np.array(mesh.faces, dtype=np.int32))
+        )
         omesh.compute_vertex_normals()
         omeshes.append(omesh)
     for omesh in omeshes:

@@ -24,28 +24,28 @@ class ParamVectorDef:
 
         if shape == 'bed':
             self.params.append(Parameter(ParamType.SCALAR, [
-                np.linspace(0.6, 1.0, 2, endpoint=False).tolist() + np.linspace(1.0, 1.6, 2).tolist(),
-                np.linspace(0.1, 0.3, 3).tolist(),
-                np.linspace(0.0, 0.55, 3).tolist(),
-                np.linspace(0.0, 0.55, 3).tolist(),
-                np.linspace(0.1, 0.25, 3).tolist()
+                np.linspace(0.0, 1.0, 5).tolist(),
+                np.linspace(0.0, 1.0, 3).tolist(),
+                np.linspace(0.0, 1.0, 5).tolist(),
+                np.linspace(0.0, 1.0, 5).tolist(),
+                np.linspace(0.0, 1.0, 3).tolist()
             ]))
             self.params.append(Parameter(ParamType.TYPE, ['basic', 'split', 'box']))
             self.params.append(Parameter(ParamType.INTEGER, [0, 2]))
         elif shape == 'chair':
             self.params.append(Parameter(ParamType.SCALAR, [
-                np.linspace(0.3, 0.8, 6).tolist(),
-                np.linspace(0.4, 0.6, 3).tolist(),
-                np.linspace(0.3, 0.5, 3).tolist()
+                np.linspace(0.0, 1.0, 6).tolist(),
+                np.linspace(0.0, 1.0, 3).tolist(),
+                np.linspace(0.0, 1.0, 5).tolist()
             ]))
             self.params.append(Parameter(ParamType.TYPE, ['basic', 'round', 'support', 'office']))
             self.params.append(Parameter(ParamType.TYPE, ['none', 'basic', 'solid', 'office']))
             self.params.append(Parameter(ParamType.TYPE, ['basic', 'hbar', 'vbar', 'office']))
         elif shape == 'shelf':
             self.params.append(Parameter(ParamType.SCALAR, [
-                np.linspace(0.2, 1.0, 4, endpoint=False).tolist() + np.linspace(1.0, 5.0, 4).tolist(),
-                np.linspace(0.1, 0.3, 3).tolist(),
-                np.linspace(0.0, 0.2, 3).tolist()
+                np.linspace(0.0, 1.0, 8).tolist(),
+                np.linspace(0.0, 1.0, 3).tolist(),
+                np.linspace(0.0, 1.0, 3).tolist()
             ]))
             self.params.append(Parameter(ParamType.INTEGER, [1, 5]))
             self.params.append(Parameter(ParamType.INTEGER, [1, 5]))
@@ -54,10 +54,10 @@ class ParamVectorDef:
             self.params.append(Parameter(ParamType.BINARY, None))
         elif shape == 'table':
             self.params.append(Parameter(ParamType.SCALAR, [
-                np.linspace(0.6, 1.0, 4, endpoint=False).tolist() + np.linspace(1.0, 4.0, 4).tolist(),
-                np.linspace(0.4, 1.0, 4).tolist(),
-                np.linspace(0.05, 0.25, 3).tolist(),
-                np.linspace(0.11, 0.15, 3).tolist()
+                np.linspace(0.0, 1.0, 8).tolist(),
+                np.linspace(0.0, 1.0, 4).tolist(),
+                np.linspace(0.0, 1.0, 3).tolist(),
+                np.linspace(0.0, 1.0, 3).tolist()
             ]))
             self.params.append(Parameter(ParamType.BINARY, None))
             self.params.append(Parameter(ParamType.TYPE, ['basic', 'support', 'round', 'split', 'square', 'solid']))
